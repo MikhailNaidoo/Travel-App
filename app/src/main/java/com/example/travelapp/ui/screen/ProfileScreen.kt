@@ -44,24 +44,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.travelapp.ui.StatusBarIcons
+import com.example.travelapp.ui.components.ScreenTopBar
 import com.example.travelapp.ui.theme.BrandBlue
 import com.example.travelapp.ui.theme.BrandBlueSoft
 
 @Composable
 fun ProfileScreen(onMenuClick: () -> Unit) {
+    StatusBarIcons(lightIcons = false)
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        Column(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-                IconButton(onClick = onMenuClick) {
-                    Icon(Icons.Outlined.Menu, contentDescription = "Menu")
-                }
-            }
-        }
+        ScreenTopBar(title = "Profile", onMenuClick = onMenuClick)
         // Profile header
         Column(
             modifier = Modifier

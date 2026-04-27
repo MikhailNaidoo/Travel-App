@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,12 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,14 +29,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/** A floating-label outlined field that opens a picker when tapped. */
 @Composable
 fun OutlinedField(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    leading: ImageVector? = null,
-    trailing: ImageVector? = Icons.Outlined.ArrowDropDown,
-    leadingTint: Color? = null,
+    trailing: ImageVector? = null,
+    trailingTint: Color? = null,
     onClick: () -> Unit = {}
 ) {
     Surface(
@@ -66,14 +64,18 @@ fun OutlinedField(
                     value,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
                 )
             }
             if (trailing != null) {
-                Icon(trailing, contentDescription = null, tint = leadingTint ?: MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            if (leading != null) {
-                Icon(leading, contentDescription = null, tint = leadingTint ?: MaterialTheme.colorScheme.primary)
+                Spacer(Modifier.size(8.dp))
+                Icon(
+                    trailing,
+                    contentDescription = null,
+                    tint = trailingTint ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }
@@ -88,7 +90,7 @@ fun SectionHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
@@ -126,5 +128,35 @@ fun AirlineDot(color: Color, label: String, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(label, style = MaterialTheme.typography.labelMedium, color = color, fontWeight = FontWeight.Bold)
+    }
+}
+
+/** Standard top header used by Trips/Watch/Profile/Placeholder screens. */
+@Composable
+fun ScreenTopBar(
+    title: String,
+    onMenuClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onMenuClick) {
+            Icon(
+                Icons.Outlined.Menu,
+                contentDescription = "Open menu",
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Text(
+            title,
+            modifier = Modifier.padding(start = 4.dp),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

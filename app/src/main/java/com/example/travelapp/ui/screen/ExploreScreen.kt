@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -27,14 +28,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.NotificationsNone
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SwapHoriz
-import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,13 +52,17 @@ import com.example.travelapp.data.MockData
 import com.example.travelapp.data.model.CityDeal
 import com.example.travelapp.data.model.TripType
 import com.example.travelapp.ui.LocalSearchState
+import com.example.travelapp.ui.StatusBarIcons
 import com.example.travelapp.ui.components.FlightCard
 import com.example.travelapp.ui.components.OutlinedField
 import com.example.travelapp.ui.components.SectionHeader
 import com.example.travelapp.ui.theme.BrandBlue
+import com.example.travelapp.ui.theme.PriceGood
 import com.example.travelapp.ui.theme.SkyHorizon
 import com.example.travelapp.ui.theme.SkyMid
 import com.example.travelapp.ui.theme.SkyTop
+
+private val GUTTER = 16.dp
 
 @Composable
 fun ExploreScreen(
@@ -66,6 +70,7 @@ fun ExploreScreen(
     onSearch: () -> Unit,
     onViewAllDeals: () -> Unit
 ) {
+    StatusBarIcons(lightIcons = true)
     val search = LocalSearchState.current
 
     LazyColumn(
@@ -80,7 +85,7 @@ fun ExploreScreen(
                 onSearch = onSearch
             )
         }
-        item { Spacer(Modifier.height(20.dp)) }
+        item { Spacer(Modifier.height(16.dp)) }
         item {
             SectionHeader(
                 title = "Top deals from ${search.from.city}",
@@ -97,12 +102,10 @@ fun ExploreScreen(
         }
         item {
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 20.dp),
+                contentPadding = PaddingValues(horizontal = GUTTER),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(MockData.topDeals) { deal ->
-                    DealCard(deal = deal)
-                }
+                items(MockData.topDeals) { deal -> DealCard(deal = deal) }
             }
         }
         item { Spacer(Modifier.height(16.dp)) }
@@ -123,7 +126,7 @@ fun ExploreScreen(
             FlightCard(
                 flight = flight,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .padding(horizontal = GUTTER, vertical = 6.dp)
                     .clickable { onSearch() }
             )
         }
@@ -135,20 +138,20 @@ private fun HeroWithSearchCard(
     onMenuClick: () -> Unit,
     onSearch: () -> Unit
 ) {
-    val search = LocalSearchState.current
     Box(modifier = Modifier.fillMaxWidth()) {
-        // Hero gradient background
+        // Hero gradient background, sized to cover the title area + a slice
+        // behind the top of the search card.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(260.dp)
+                .height(280.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(SkyTop, SkyMid, SkyHorizon.copy(alpha = 0.85f))
                     )
                 )
         ) {
-            // soft cloud highlights with radial-ish gradients via overlays
+            // Soft cloud highlight
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -165,7 +168,7 @@ private fun HeroWithSearchCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                    .padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onMenuClick) {
@@ -176,10 +179,10 @@ private fun HeroWithSearchCard(
                     Icon(Icons.Outlined.NotificationsNone, contentDescription = "Notifications", tint = Color.White)
                 }
             }
-            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
+            Column(modifier = Modifier.padding(horizontal = GUTTER, vertical = 4.dp)) {
                 Text(
                     "Explore the world",
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
@@ -187,10 +190,10 @@ private fun HeroWithSearchCard(
                 Text(
                     "Find the best flights",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White.copy(alpha = 0.92f)
+                    color = Color.White.copy(alpha = 0.94f)
                 )
             }
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
             SearchCard(onSearch = onSearch)
         }
     }
@@ -203,9 +206,10 @@ private fun SearchCard(onSearch: () -> Unit) {
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        shadowElevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = GUTTER)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             TripTypeTabs(
@@ -214,30 +218,27 @@ private fun SearchCard(onSearch: () -> Unit) {
             )
             Spacer(Modifier.height(16.dp))
 
-            // From / To row with swap button overlay
+            // From / To row with central swap button
             Box(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     OutlinedField(
                         label = "From",
                         value = "${search.from.city} (${search.from.code})",
-                        leading = Icons.Outlined.LocationOn,
-                        leadingTint = BrandBlue,
-                        trailing = null,
+                        trailing = Icons.Outlined.LocationOn,
+                        trailingTint = BrandBlue,
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedField(
                         label = "To",
                         value = "${search.to.city} (${search.to.code})",
-                        leading = Icons.Outlined.LocationOn,
-                        leadingTint = BrandBlue,
-                        trailing = null,
+                        trailing = Icons.Outlined.LocationOn,
+                        trailingTint = BrandBlue,
                         modifier = Modifier.weight(1f)
                     )
                 }
-                // Swap button centered between the two
                 Box(
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -251,7 +252,7 @@ private fun SearchCard(onSearch: () -> Unit) {
                     Icon(
                         Icons.Outlined.SwapHoriz,
                         contentDescription = "Swap",
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -265,18 +266,16 @@ private fun SearchCard(onSearch: () -> Unit) {
                 OutlinedField(
                     label = "Depart",
                     value = search.depart,
-                    leading = Icons.Outlined.CalendarMonth,
-                    leadingTint = BrandBlue,
-                    trailing = null,
+                    trailing = Icons.Outlined.CalendarMonth,
+                    trailingTint = BrandBlue,
                     modifier = Modifier.weight(1f)
                 )
                 if (search.tripType == TripType.RoundTrip) {
                     OutlinedField(
                         label = "Return",
                         value = search.ret ?: "—",
-                        leading = Icons.Outlined.CalendarMonth,
-                        leadingTint = BrandBlue,
-                        trailing = null,
+                        trailing = Icons.Outlined.CalendarMonth,
+                        trailingTint = BrandBlue,
                         modifier = Modifier.weight(1f)
                     )
                 } else {
@@ -292,15 +291,13 @@ private fun SearchCard(onSearch: () -> Unit) {
                 OutlinedField(
                     label = "Travelers",
                     value = search.travelers.toString(),
-                    leading = Icons.Outlined.Person,
-                    leadingTint = BrandBlue,
+                    trailing = Icons.Outlined.ArrowDropDown,
                     modifier = Modifier.weight(1f)
                 )
                 OutlinedField(
                     label = "Class",
                     value = search.cabin.label,
-                    leading = Icons.Outlined.WorkspacePremium,
-                    leadingTint = BrandBlue,
+                    trailing = Icons.Outlined.ArrowDropDown,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -385,7 +382,6 @@ private fun DealCard(deal: CityDeal) {
                     .aspectRatio(1.4f)
                     .background(brush = Brush.verticalGradient(deal.gradient))
             ) {
-                // subtle highlight overlay for depth
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -416,7 +412,7 @@ private fun DealCard(deal: CityDeal) {
                 Text(
                     "$${deal.priceFromUsd}",
                     style = MaterialTheme.typography.titleLarge,
-                    color = com.example.travelapp.ui.theme.PriceGood,
+                    color = PriceGood,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(4.dp))

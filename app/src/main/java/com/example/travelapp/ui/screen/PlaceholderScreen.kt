@@ -28,6 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.travelapp.ui.StatusBarIcons
+import com.example.travelapp.ui.components.ScreenTopBar
 import com.example.travelapp.ui.theme.BrandBlue
 import com.example.travelapp.ui.theme.BrandBlueSoft
 
@@ -38,15 +40,14 @@ fun PlaceholderScreen(
     icon: ImageVector,
     onMenuClick: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
+    StatusBarIcons(lightIcons = false)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 8.dp, vertical = 4.dp)) {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Outlined.Menu, contentDescription = "Menu")
-            }
-        }
+    ) {
+        ScreenTopBar(title = title, onMenuClick = onMenuClick)
         Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,16 +64,10 @@ fun PlaceholderScreen(
                 }
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    title,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
                     blurb,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
             }
         }

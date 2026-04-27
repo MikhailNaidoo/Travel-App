@@ -48,6 +48,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.travelapp.data.MockData
 import com.example.travelapp.data.model.WatchedRoute
+import com.example.travelapp.ui.StatusBarIcons
+import com.example.travelapp.ui.components.ScreenTopBar
 import com.example.travelapp.ui.theme.BrandBlue
 import com.example.travelapp.ui.theme.BrandBlueSoft
 import com.example.travelapp.ui.theme.PriceFlat
@@ -57,29 +59,17 @@ import kotlin.math.abs
 
 @Composable
 fun WatchScreen(onMenuClick: () -> Unit) {
+    StatusBarIcons(lightIcons = false)
     var tabIndex by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        Column(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-                IconButton(onClick = onMenuClick) {
-                    Icon(Icons.Outlined.Menu, contentDescription = "Menu")
-                }
-            }
-            Text(
-                "Watch",
-                modifier = Modifier.padding(horizontal = 20.dp),
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-        Spacer(Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+        ScreenTopBar(title = "Watch", onMenuClick = onMenuClick)
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             TabPill("Price alerts", selected = tabIndex == 0, onClick = { tabIndex = 0 }, modifier = Modifier.weight(1f))
             TabPill("Saved searches", selected = tabIndex == 1, onClick = { tabIndex = 1 }, modifier = Modifier.weight(1f))
         }

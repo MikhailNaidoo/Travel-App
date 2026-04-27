@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -49,12 +50,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.travelapp.data.MockData
 import com.example.travelapp.ui.LocalSearchState
+import com.example.travelapp.ui.StatusBarIcons
 import com.example.travelapp.ui.components.FlightCard
 import com.example.travelapp.ui.theme.BrandBlue
 import com.example.travelapp.ui.theme.PriceGood
 
 @Composable
 fun ResultsScreen(onBack: () -> Unit) {
+    StatusBarIcons(lightIcons = false)
     val search = LocalSearchState.current
     var selectedDate by remember { mutableIntStateOf(MockData.dateOptions.indexOfFirst { it.isSelected }.coerceAtLeast(0)) }
     var saved by remember { mutableStateOf(false) }
@@ -93,7 +96,7 @@ fun ResultsScreen(onBack: () -> Unit) {
                             )
                         }
                     }
-                    Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 "${search.from.city} (${search.from.code})",
@@ -179,7 +182,7 @@ fun ResultsScreen(onBack: () -> Unit) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -224,11 +227,13 @@ fun ResultsScreen(onBack: () -> Unit) {
                 .fillMaxWidth(),
             color = MaterialTheme.colorScheme.surface,
             shadowElevation = 8.dp,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            tonalElevation = 0.dp
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

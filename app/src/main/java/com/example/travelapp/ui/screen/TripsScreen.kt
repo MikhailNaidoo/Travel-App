@@ -44,6 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.travelapp.TravelApp
 import com.example.travelapp.data.db.TripEntity
+import com.example.travelapp.ui.StatusBarIcons
+import com.example.travelapp.ui.components.ScreenTopBar
 import com.example.travelapp.ui.theme.BrandBlue
 import com.example.travelapp.ui.theme.BrandBlueSoft
 import com.example.travelapp.ui.theme.PriceBadgeBg
@@ -52,6 +54,7 @@ import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun TripsScreen(onMenuClick: () -> Unit) {
+    StatusBarIcons(lightIcons = false)
     val context = LocalContext.current
     val app = remember(context) { context.applicationContext as TravelApp }
     val upcomingTrips by app.tripRepository.upcoming().collectAsState(initial = emptyList())
@@ -64,10 +67,11 @@ fun TripsScreen(onMenuClick: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        TopHeader(title = "My Trips", onMenuClick = onMenuClick)
+        ScreenTopBar(title = "My Trips", onMenuClick = onMenuClick)
 
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             TabPill("Upcoming", selected = tabIndex == 0, onClick = { tabIndex = 0 }, modifier = Modifier.weight(1f))
             TabPill("Past", selected = tabIndex == 1, onClick = { tabIndex = 1 }, modifier = Modifier.weight(1f))
         }
@@ -83,31 +87,6 @@ fun TripsScreen(onMenuClick: () -> Unit) {
                 AddTripCta()
             }
         }
-    }
-}
-
-@Composable
-private fun TopHeader(title: String, onMenuClick: () -> Unit) {
-    Column(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Outlined.Menu, contentDescription = "Menu")
-            }
-            Spacer(Modifier.weight(1f))
-        }
-        Text(
-            title,
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(Modifier.height(4.dp))
     }
 }
 
